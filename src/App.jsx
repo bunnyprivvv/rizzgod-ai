@@ -8,15 +8,18 @@ import PracticeArena from './components/PracticeArena';
 import PlaybookVault from './components/PlaybookVault';
 import ApiKeyModal from './components/ApiKeyModal';
 import InstallModal from './components/InstallModal';
+import AboutBioModal from './components/AboutBioModal';
 
 import { analyzeChatOrStory } from './services/aiEngine';
-import { Flame, Sparkles, Smartphone, Download, Check } from 'lucide-react';
+import { Flame, Sparkles, Smartphone, Download, Check, HelpCircle, Eye, Zap, Target } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('analyzer'); // 'analyzer', 'story', 'practice', 'playbook'
   const [apiKey, setApiKey] = useState(localStorage.getItem('RIZZGOD_GEMINI_KEY') || '');
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [showBioBanner, setShowBioBanner] = useState(true);
 
   // Native PWA Install Prompt state
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -90,6 +93,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenApiKey={() => setIsApiKeyModalOpen(true)}
         onOpenInstall={handleNativeInstall}
+        onOpenAbout={() => setIsAboutModalOpen(true)}
         hasApiKey={!!apiKey}
         isInstallable={!!deferredPrompt}
       />
@@ -97,7 +101,42 @@ export default function App() {
       {/* Main Content Area */}
       <main className="main-content">
 
-        {/* Hero Motivational & Install Banner */}
+        {/* Website Bio & Mission Banner */}
+        {showBioBanner && (
+          <div className="glass-panel" style={{ padding: '1.25rem 1.5rem', marginBottom: '1.5rem', borderLeft: '4px solid var(--accent-gold)', background: 'linear-gradient(135deg, rgba(255,183,3,0.08) 0%, rgba(10,12,20,0.85) 100%)', position: 'relative' }}>
+            <button 
+              onClick={() => setShowBioBanner(false)}
+              style={{ position: 'absolute', top: '12px', right: '12px', background: 'transparent', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '0.8rem' }}
+              title="Dismiss bio banner"
+            >
+              ✕
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+              <span className="badge badge-gold"><Flame size={13} /> ABOUT RIZZGOD AI</span>
+              <h2 style={{ fontSize: '1.1rem', margin: 0 }} className="gradient-text-gold">
+                Elite AI Texting Coach & DM Subtext Decoder
+              </h2>
+            </div>
+
+            <p style={{ fontSize: '0.88rem', color: '#e2e8f0', margin: 0, lineHeight: 1.55 }}>
+              <strong>What this app does:</strong> RIZZGOD AI analyzes DM screenshots, text messages, and Instagram story posts to decode female subtext, spot hidden openings, and handle defense mechanisms (like <em>"I have a boyfriend"</em> or dry energy). It generates 3 high-tension response options — <strong>The Teaser</strong>, <strong>The Bold Call-Out</strong>, and <strong>The High-Tension Drop</strong> — designed to push the interaction forward to dates.
+            </p>
+
+            <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <button onClick={() => setIsAboutModalOpen(true)} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem' }}>
+                <HelpCircle size={14} color="var(--accent-gold)" /> Full App Bio & Guide
+              </button>
+              {deferredPrompt && !isInstalled && (
+                <button onClick={handleNativeInstall} className="btn-primary animate-pulse-slow" style={{ fontSize: '0.75rem', padding: '0.4rem 0.8rem' }}>
+                  <Download size={14} /> 1-CLICK INSTALL APP
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Hero Motivational Banner */}
         <div className="glass-panel-glow glass-panel" style={{ padding: '1.15rem 1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', background: 'linear-gradient(135deg, rgba(255,183,3,0.12) 0%, rgba(255,42,95,0.1) 100%)' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
@@ -110,22 +149,11 @@ export default function App() {
           </div>
 
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            {deferredPrompt && !isInstalled ? (
-              <button onClick={handleNativeInstall} className="btn-primary animate-pulse-slow" style={{ fontSize: '0.85rem', padding: '0.6rem 1.1rem' }}>
-                <Download size={16} /> 1-CLICK INSTALL APP
-              </button>
-            ) : isInstalled ? (
-              <span className="badge badge-gold" style={{ padding: '0.5rem 0.8rem', fontSize: '0.75rem' }}>
-                <Check size={14} /> APP INSTALLED
-              </span>
-            ) : (
-              <button onClick={() => setIsInstallModalOpen(true)} className="btn-secondary" style={{ fontSize: '0.8rem', padding: '0.5rem 0.9rem' }}>
-                <Smartphone size={15} color="var(--accent-gold)" /> Phone App Guide
-              </button>
-            )}
-
             <button onClick={() => setActiveTab('story')} className="btn-intense" style={{ fontSize: '0.85rem', padding: '0.6rem 1.1rem' }}>
               🔥 Story Reply Hooks
+            </button>
+            <button onClick={() => setActiveTab('practice')} className="btn-primary" style={{ fontSize: '0.85rem', padding: '0.6rem 1.1rem' }}>
+              ⚡ Practice Arena
             </button>
           </div>
         </div>
@@ -173,6 +201,12 @@ export default function App() {
       <InstallModal 
         isOpen={isInstallModalOpen}
         onClose={() => setIsInstallModalOpen(false)}
+      />
+
+      {/* About App Bio Modal */}
+      <AboutBioModal 
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
       />
 
       {/* Footer */}

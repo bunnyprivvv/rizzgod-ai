@@ -1,7 +1,7 @@
 import React from 'react';
-import { Flame, Sparkles, Key, MessageSquare, Camera, Award, Smartphone, Download } from 'lucide-react';
+import { Flame, Sparkles, Key, MessageSquare, Camera, Award, Smartphone, Download, HelpCircle } from 'lucide-react';
 
-export default function Header({ activeTab, setActiveTab, onOpenApiKey, onOpenInstall, hasApiKey, isInstallable }) {
+export default function Header({ activeTab, setActiveTab, onOpenApiKey, onOpenInstall, onOpenAbout, hasApiKey, isInstallable }) {
   return (
     <>
       {/* Desktop & Mobile Header */}
@@ -67,7 +67,17 @@ export default function Header({ activeTab, setActiveTab, onOpenApiKey, onOpenIn
           </nav>
 
           {/* Quick Tools */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <button 
+              onClick={onOpenAbout}
+              className="btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '0.45rem 0.75rem' }}
+              title="About RIZZGOD AI & What This App Does"
+            >
+              <HelpCircle size={14} color="var(--accent-gold)" />
+              About App
+            </button>
+
             <button 
               onClick={onOpenInstall}
               className={isInstallable ? "btn-primary" : "btn-secondary"}
